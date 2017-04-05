@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Encapsulates a 2 points into an object, called Point
 public class Point{
 
     private int x;

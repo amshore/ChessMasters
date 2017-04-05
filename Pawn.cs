@@ -2,37 +2,28 @@
 
 public class Pawn : Piece {
 
+    //Used for determing which direction pawn moves (1 for WHITE, -1 for BLACK)
     int direction;
 
+    //Default constructor, should never be used
     public Pawn()
     {
         direction = 1;
     }
 
+    //Calls the base constructor and sets direction
     public Pawn(int all, Point p, Board b) : base(all, p, b)
     {
         direction = (all == 0)? 1 : -1;
     }
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
-    //(a)
-    //The pawn may move only forward[except as limited by Article 4.2].
-    //(b)
-    //Except when making a capture, it advances from its original square either one or two vacant squares along the file on which it is placed, 
-    //and on subsequent moves it advances one vacant square along the file.When capturing, it advances one square along either of the diagonals 
-    //on which it stands.
-    //(c)
-    //A pawn, attacking a square crossed by an opponent's pawn which has [just] been advanced two squares in one move from its original square, 
-    //may capture this opponent's pawn as though the latter had been moved only one square.This capture may only be made in [immediate]
-    //reply to such an advance, and is called an "en passant" capture.
+    //(a) The pawn may move only forward[except as limited by Article 4.2].
+    //(b) Except when making a capture, it advances from its original square either one or two vacant squares along the file on which it is placed, 
+    //     and on subsequent moves it advances one vacant square along the file.When capturing, it advances one square along either of the diagonals 
+    //     on which it stands.
+    //(c) A pawn, attacking a square crossed by an opponent's pawn which has [just] been advanced two squares in one move from its original square, 
+    //     may capture this opponent's pawn as though the latter had been moved only one square.This capture may only be made in [immediate]
+    //     reply to such an advance, and is called an "en passant" capture.
     override public MoveTypesE canMove(Point p)
     {
         if (base.canMove(p) == MoveTypesE.ILLEGAL)
@@ -67,6 +58,7 @@ public class Pawn : Piece {
         return MoveTypesE.ILLEGAL;
     }
 
+    //Same basic functionality as normal move but keeps track of setting enpassant if the pawn doublesteps and promotes the pawn if it reaches the end
     public override void tryToMove(Point p)
     {
         MoveTypesE mt = canMove(p);

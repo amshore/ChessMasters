@@ -95,26 +95,33 @@ public class Board : Singleton<Board>
         enPassant = null;
     }
 
+    //Returns the piece located at the point p (null if no piece)
     public Piece pieceAt(Point p)
     {
         return boardPieces[p.getX() , p.getY()];
     }
 
+    //Returns the piece located at (x,y) (null if no piece)
     public Piece pieceAt(int x, int y)
     {
         return boardPieces[x, y];
     }
 
+    //Moves the piece located at the point p to the point pt
     public void placePieceAt(Piece p, Point pt)
     {
         boardPieces[pt.getX(), pt.getY()] = p;
     }
 
+    //Moves the piece at the point p1 to p2 (calls the 3 paramater function with the third point null)
     public void Move(Point p1, Point p2)
     {
         Move(p1, p2, null);
     }
 
+    //Moves the piece at the point p1 to p2 and sets enpassant to ep
+    //Updates the game history
+    //Switches the current turn
     public void Move(Point p1, Point p2, Point ep)
     {
         History temp_hist = new History(p1, p2, this, lastHistory);
@@ -126,6 +133,7 @@ public class Board : Singleton<Board>
         boardPieces[p1.getX(), p1.getY()] = null;
     }
 
+    //Calls tryToMove for the piece at p1 to move to p2
     public void tryToMove(Point p1, Point p2)
     {
         Piece temp_piece = pieceAt(p1);
@@ -135,11 +143,13 @@ public class Board : Singleton<Board>
         }
     }
 
+    //Kills the piece at enPassant
     public void killEnPassant()
     {
         boardPieces[enPassant.getX(), enPassant.getY()] = null;
     }
 
+    //Tests if moving a piece from start to finish would put the current turn's king in check
     public bool inCheck(Point start, Point finish)
     {
         Piece startPiece = boardPieces[start.getX(), start.getY()];
@@ -154,6 +164,7 @@ public class Board : Singleton<Board>
         return flag;
     }
 
+    //Tests if any enemy piece can move to the current space (where the king is)
     public bool inCheck(Point p)
     {
         for(int i = 0; i < 7; i++)
@@ -164,6 +175,8 @@ public class Board : Singleton<Board>
         return false;
     }
 
+    //Tests if you pick up notKing and king, if the king is placed at (xloc, yloc) then if the king is in check
+    //Used for castling
     public bool inCheck(Piece notKing, Piece king, int xloc, int yloc)
     {
         boardPieces[notKing.getLoc().getX(), notKing.getLoc().getY()] = null;
@@ -173,12 +186,15 @@ public class Board : Singleton<Board>
         boardPieces[king.getLoc().getX(), king.getLoc().getY()] = king;
         return flag;
     }
-
+    
+    //Promotes the pawn at p
+    //Currently promotes it to queen until we figure out how to prompt the user
     public void promotePawn(Point p)
     {
         boardPieces[p.getX(), p.getY()] = new Queen(turn, p.getX(), p.getY());
     }
 
+    //Gets the point enPassant refers to currently
     public Point getEnPassant()
     {
         return enPassant;

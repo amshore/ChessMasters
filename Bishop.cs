@@ -11,15 +11,6 @@ public class Bishop : Piece {
     {
 
     }
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     //The bishop moves to any square (except as limited by Article 4.2) on the diagonals on which it stands.
     override public MoveTypesE canMove(Point p)

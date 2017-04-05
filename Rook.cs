@@ -11,15 +11,6 @@ public class Rook : Piece {
     {
 
     }
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     //The rook moves to any square (except as limited by Article 4.2) on the file or rank on which it stands.
     override public MoveTypesE canMove(Point p)

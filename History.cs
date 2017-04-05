@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Record of all moves made in game
+//Modeled as doubly linked list
 public class History {
 
     private Board board;
