@@ -1,17 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Pawn : Piece {
 
+    int direction;
+
     public Pawn()
     {
-
+        direction = 1;
     }
 
-    public Pawn(bool all, int x, int y): base(all, x, y)
+    public Pawn(int all, Point p, Board b) : base(all, p, b)
     {
-
+        direction = (all == 0)? 1 : -1;
     }
     // Use this for initialization
     void Start () {
@@ -33,63 +33,56 @@ public class Pawn : Piece {
     //A pawn, attacking a square crossed by an opponent's pawn which has [just] been advanced two squares in one move from its original square, 
     //may capture this opponent's pawn as though the latter had been moved only one square.This capture may only be made in [immediate]
     //reply to such an advance, and is called an "en passant" capture.
-    override public bool findValidSpaces()
+    override public MoveTypesE canMove(Point p)
     {
-        bool flag = false;
-        if(allegiance)
+        if (base.canMove(p) == MoveTypesE.ILLEGAL)
+            return MoveTypesE.ILLEGAL;
+        int dy = p.getY() - loc.getY();
+        int dx = p.getX() - loc.getX();
+        if (dy == direction)
         {
-            if(loc[1] == 1 && gameBoard.pieceAtSpace(loc[0], 3, true) == 0)
+            Piece pAt = gameBoard.pieceAt(p);
+            if ((System.Math.Abs(dx) == 1) && pAt == null)
             {
-                Debug.Log("Pawn can move to: (" + loc[0] + ",3)");
-                flag = true;
-                gameBoard.highlightSquare(loc[0], 3);
+                if (gameBoard.getEnPassant() == p)
+                    return MoveTypesE.ENPASSANT;
             }
-            if(gameBoard.pieceAtSpace(loc[0], loc[1] + 1, true) == 0)
+            else if ((System.Math.Abs(dx) == 1) && (allegiance == pAt.getAllegiance()))
             {
-                Debug.Log("Pawn can move to: (" + loc[0] + "," + (loc[1]+1) + ")");
-                flag = true;
-                gameBoard.highlightSquare(loc[0], loc[1]+1);
+                if ((direction == 1 && p.getY() == 7) || (direction == -1 && p.getY() == 0))
+                    return MoveTypesE.PROMOTE;
+                else
+                    return MoveTypesE.CAPTURE;
             }
-            if (gameBoard.pieceAtSpace(loc[0] - 1, loc[1] + 1, true) == 1)
+            if ((dx == 0) && gameBoard.pieceAt(p) == null)
             {
-                Debug.Log("Pawn can move to: (" + (loc[0] - 1) + "," + (loc[1] + 1) + ")");
-                flag = true;
-                gameBoard.highlightSquare(loc[0] - 1, loc[1] + 1);
-            }
-            if (gameBoard.pieceAtSpace(loc[0] + 1, loc[1] + 1, true) == 1)
-            {
-                Debug.Log("Pawn can move to: (" + (loc[0] + 1) + "," + (loc[1] + 1) + ")");
-                flag = true;
-                gameBoard.highlightSquare(loc[0] + 1, loc[1] + 1);
+                if ((direction == 1 && p.getY() == 7) || (direction == -1 && p.getY() == 0))
+                    return MoveTypesE.PROMOTE;
+                else
+                    return MoveTypesE.NORMAL;
             }
         }
-        else
+        if (!hasMoved && (dy == 2 * direction) && (dx == 0) && (gameBoard.pieceAt(p) == null) && (gameBoard.pieceAt(p.getX(), p.getY() + direction) == null))
+            return MoveTypesE.DOUBLESTEP;
+        return MoveTypesE.ILLEGAL;
+    }
+
+    public override void tryToMove(Point p)
+    {
+        MoveTypesE mt = canMove(p);
+        if (mt != MoveTypesE.ILLEGAL)
         {
-            if (loc[1] == 6 && gameBoard.pieceAtSpace(loc[0], 4, false) == 0)
+            if (mt == MoveTypesE.DOUBLESTEP)
+                gameBoard.Move(loc, p, new Point((loc.getX() + p.getX()) / 2, (loc.getY() + p.getY()) / 2));
+            else
             {
-                Debug.Log("Pawn can move to: (" + loc[0] + ",4)");
-                flag = true;
-                gameBoard.highlightSquare(loc[0], 3);
+                if (mt == MoveTypesE.ENPASSANT)
+                    gameBoard.killEnPassant();
+                if (mt == MoveTypesE.PROMOTE)
+                    gameBoard.promotePawn(loc);
+                gameBoard.Move(loc, p);
             }
-            if (gameBoard.pieceAtSpace(loc[0], loc[1] - 1, false) == 0)
-            {
-                Debug.Log("Pawn can move to: (" + loc[0] + "," + (loc[1] - 1) + ")");
-                flag = true;
-                gameBoard.highlightSquare(loc[0], loc[1] - 1);
-            }
-            if (gameBoard.pieceAtSpace(loc[0] - 1, loc[1] - 1, false) == 1)
-            {
-                Debug.Log("Pawn can move to: (" + (loc[0] - 1) + "," + (loc[1] - 1) + ")");
-                flag = true;
-                gameBoard.highlightSquare(loc[0] - 1, loc[1] - 1);
-            }
-            if (gameBoard.pieceAtSpace(loc[0] + 1, loc[1] - 1, false) == 1)
-            {
-                Debug.Log("Pawn can move to: (" + (loc[0] + 1) + "," + (loc[1] - 1) + ")");
-                flag = true;
-                gameBoard.highlightSquare(loc[0] + 1, loc[1] - 1);
-            }
+            hasMoved = true;
         }
-        return flag;
     }
 }

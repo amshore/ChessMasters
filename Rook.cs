@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Rook : Piece {
 
@@ -9,7 +7,7 @@ public class Rook : Piece {
 
     }
 
-    public Rook(bool all, int x, int y): base(all, x, y)
+    public Rook(int all, Point p, Board b): base(all, p, b)
     {
 
     }
@@ -24,33 +22,32 @@ public class Rook : Piece {
 	}
 
     //The rook moves to any square (except as limited by Article 4.2) on the file or rank on which it stands.
-    public override bool findValidSpaces()
+    override public MoveTypesE canMove(Point p)
     {
-        bool flag = false;
-        for(int i = 1; i <= 7-loc[0] && gameBoard.pieceAtSpace(loc[0] + i, loc[1], allegiance) != 2; i++)
+        MoveTypesE mt = base.canMove(p);
+        if(mt == MoveTypesE.ILLEGAL)
+            return MoveTypesE.ILLEGAL;
+        int dy = p.getY() - loc.getY();
+        int dx = p.getX() - loc.getX();
+
+        if(dy == 0)
         {
-            Debug.Log("Rook can move to: (" + (loc[0]+ i) + "," + (loc[1]) + ")");
-            flag = true;
-            gameBoard.highlightSquare(loc[0]+i, loc[1]);
+            int signFactor = (dx * System.Math.Abs(dx) > 0) ? 1 : -1;
+            for(int i = 1; i < System.Math.Abs(dx); i++)
+            {
+                if (gameBoard.pieceAt(loc.getX() + signFactor * i, loc.getY()) != null)
+                    return MoveTypesE.ILLEGAL;
+            }
         }
-        for (int i = 1; i <= loc[0] && gameBoard.pieceAtSpace(loc[0] - i, loc[1], allegiance) != 2; i++)
+        else if (dx == 0)
         {
-            Debug.Log("Rook can move to: (" + (loc[0] - i) + "," + (loc[1]) + ")");
-            flag = true;
-            gameBoard.highlightSquare(loc[0] + i, loc[1]);
+            int signFactor = (dy * System.Math.Abs(dy) > 0) ? 1 : -1;
+            for (int i = 1; i < System.Math.Abs(dy); i++)
+            {
+                if (gameBoard.pieceAt(loc.getX(), loc.getY() + signFactor * i) != null)
+                    return MoveTypesE.ILLEGAL;
+            }
         }
-        for (int i = 1; i <= 7-loc[1] && gameBoard.pieceAtSpace(loc[0], loc[1]+i, allegiance) != 2; i++)
-        {
-            Debug.Log("Rook can move to: (" + (loc[0]) + "," + (loc[1]+i) + ")");
-            flag = true;
-            gameBoard.highlightSquare(loc[0], loc[1]+i);
-        }
-        for (int i = 1; i <= loc[1] && gameBoard.pieceAtSpace(loc[0], loc[1]-i, allegiance) != 2; i++)
-        {
-            Debug.Log("Rook can move to: (" + (loc[0]) + "," + (loc[1]-i) + ")");
-            flag = true;
-            gameBoard.highlightSquare(loc[0], loc[1]-i);
-        }
-        return flag;
+        return mt;
     }
 }

@@ -1,25 +1,36 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 abstract public class Piece : MonoBehaviour {
+
+    public enum MoveTypesE
+    {
+        ILLEGAL,
+        NORMAL,
+        CASTLE,
+        DOUBLESTEP,
+        ENPASSANT,
+        CAPTURE,
+        PROMOTE
+    };
+
+    protected bool hasMoved = false;
     bool notClicked = true;
     protected Board gameBoard;
-    public bool allegiance { get; set; }
-    protected int[] loc = { 0, 0 };
+    public int allegiance;
+    protected Point loc;
 
     public Piece()
     {
-        allegiance = true;
+        allegiance = (int)Board.PlayerE.White;
     }
 
-    public Piece(bool all, int x, int y)
+    public Piece(int all, Point p, Board b)
     {
         allegiance = all;
-        loc[0] = x;
-        loc[1] = y;
+        loc = p;
+        gameBoard = b;
     }
+
 	// Use this for initialization
 	void Start () {
         gameBoard = Board.Instance;
@@ -34,10 +45,57 @@ abstract public class Piece : MonoBehaviour {
         }
 	}
 
+    public bool getHasMoved()
+    {
+        return hasMoved;
+    }
+
+    public virtual MoveTypesE canMove(Point p)
+    {
+        if((p.getX() >= 0) && (p.getX() <= 7) && (p.getY() >= 0) && (p.getY() <= 7))
+        {
+            if (gameBoard.inCheck(loc, p))
+            {
+                return MoveTypesE.ILLEGAL;
+            }
+            if (gameBoard.pieceAt(p) == null)
+            {
+                return MoveTypesE.NORMAL;
+            }
+            else if (gameBoard.pieceAt(p).getAllegiance() != allegiance)
+                return MoveTypesE.CAPTURE;
+        }
+        return MoveTypesE.ILLEGAL;
+    }
+
+    public virtual void tryToMove(Point p)
+    {
+        MoveTypesE mt = canMove(p);
+        if(mt != MoveTypesE.ILLEGAL)
+        {
+            gameBoard.Move(loc, p);
+            hasMoved = true;
+        }
+    }
+
+    public int getAllegiance()
+    {
+        return allegiance;
+    }
+
     public void setLoc(int xn, int yn)
     {
-        loc[0] = xn;
-        loc[1] = yn;
+        loc.setPoint(xn, yn);
+    }
+
+    public void setLoc(Point p)
+    {
+        loc = p;
+    }
+
+    public Point getLoc()
+    {
+        return loc;
     }
 
     void OnMouseEnter()

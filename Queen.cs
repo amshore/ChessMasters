@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Queen : Piece {
 
@@ -9,7 +7,7 @@ public class Queen : Piece {
 
     }
 
-    public Queen(bool all, int x, int y): base(all, x, y)
+    public Queen(int all, int x, int y): base(all, x, y)
     {
 
     }
@@ -25,57 +23,42 @@ public class Queen : Piece {
 	}
 
     //The queen moves to any square (except as limited by Article 4.2) [No leapfrogging] on the file, rank, or diagonals on which it stands.
-    public override bool findValidSpaces()
+    override public MoveTypesE canMove(Point p)
     {
-        bool flag = false;
-        for (int i = 1; i <= Mathf.Min(7 - loc[0], 7 - loc[1]) && gameBoard.pieceAtSpace(loc[0] + i, loc[1] + i, allegiance) != 2; i++)
+        MoveTypesE mt = base.canMove(p);
+        if (mt == MoveTypesE.ILLEGAL)
+            return MoveTypesE.ILLEGAL;
+        int dy = p.getY() - loc.getY();
+        int dx = p.getX() - loc.getX();
+
+        if (dy == 0)
         {
-            Debug.Log("Queen can move to: (" + (loc[0] + i) + "," + (loc[1] + i) + ")");
-            flag = true;
-            gameBoard.highlightSquare(loc[0] + i, loc[1] + i);
+            int signFactor = (dx * System.Math.Abs(dx) > 0) ? 1 : -1;
+            for (int i = 1; i < System.Math.Abs(dx); i++)
+            {
+                if (gameBoard.pieceAt(loc.getX() + signFactor * i, loc.getY()) != null)
+                    return MoveTypesE.ILLEGAL;
+            }
         }
-        for (int i = 1; i <= Mathf.Min(loc[0], 7 - loc[1]) && gameBoard.pieceAtSpace(loc[0] - i, loc[1] + i, allegiance) != 2; i++)
+        else if (dx == 0)
         {
-            Debug.Log("Queen can move to: (" + (loc[0] - i) + "," + (loc[1] + i) + ")");
-            flag = true;
-            gameBoard.highlightSquare(loc[0] - i, loc[1] + i);
+            int signFactor = (dy * System.Math.Abs(dy) > 0) ? 1 : -1;
+            for (int i = 1; i < System.Math.Abs(dy); i++)
+            {
+                if (gameBoard.pieceAt(loc.getX(), loc.getY() + signFactor * i) != null)
+                    return MoveTypesE.ILLEGAL;
+            }
         }
-        for (int i = 1; i <= Mathf.Min(loc[0], loc[1]) && gameBoard.pieceAtSpace(loc[0] - i, loc[1] - i, allegiance) != 2; i++)
+        if (System.Math.Abs(dy) == System.Math.Abs(dx))
         {
-            Debug.Log("Queen can move to: (" + (loc[0] - i) + "," + (loc[1] - i) + ")");
-            flag = true;
-            gameBoard.highlightSquare(loc[0] - i, loc[1] - i);
+            int signFactorX = (dx * System.Math.Abs(dx) > 0) ? 1 : -1;
+            int signFactorY = (dy * System.Math.Abs(dy) > 0) ? 1 : -1;
+            for (int i = 1; i < System.Math.Abs(dx); i++)
+            {
+                if (gameBoard.pieceAt(loc.getX() + signFactorX * i, loc.getY() + signFactorY * i) != null)
+                    return MoveTypesE.ILLEGAL;
+            }
         }
-        for (int i = 1; i <= Mathf.Min(7 - loc[0], loc[1]) && gameBoard.pieceAtSpace(loc[0] + i, loc[1] - i, allegiance) != 2; i++)
-        {
-            Debug.Log("Queen can move to: (" + (loc[0] + i) + "," + (loc[1] - i) + ")");
-            flag = true;
-            gameBoard.highlightSquare(loc[0] + i, loc[1] - i);
-        }
-        for (int i = 1; i <= 7 - loc[0] && gameBoard.pieceAtSpace(loc[0] + i, loc[1], allegiance) != 2; i++)
-        {
-            Debug.Log("Queen can move to: (" + (loc[0] + i) + "," + (loc[1]) + ")");
-            flag = true;
-            gameBoard.highlightSquare(loc[0] + i, loc[1]);
-        }
-        for (int i = 1; i <= loc[0] && gameBoard.pieceAtSpace(loc[0] - i, loc[1], allegiance) != 2; i++)
-        {
-            Debug.Log("Queen can move to: (" + (loc[0] - i) + "," + (loc[1]) + ")");
-            flag = true;
-            gameBoard.highlightSquare(loc[0] + i, loc[1]);
-        }
-        for (int i = 1; i <= 7 - loc[1] && gameBoard.pieceAtSpace(loc[0], loc[1] + i, allegiance) != 2; i++)
-        {
-            Debug.Log("Queen can move to: (" + (loc[0]) + "," + (loc[1] + i) + ")");
-            flag = true;
-            gameBoard.highlightSquare(loc[0], loc[1] + i);
-        }
-        for (int i = 1; i <= loc[1] && gameBoard.pieceAtSpace(loc[0], loc[1] - i, allegiance) != 2; i++)
-        {
-            Debug.Log("Queen can move to: (" + (loc[0]) + "," + (loc[1] - i) + ")");
-            flag = true;
-            gameBoard.highlightSquare(loc[0], loc[1] - i);
-        }
-        return flag;
+        return mt;
     }
 }
