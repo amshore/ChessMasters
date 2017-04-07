@@ -20,6 +20,12 @@ public class Point{
         y = j;
     }
 
+	public long[] turnToWorld()
+	{
+		long[] tempLong = { (2.0 * x - 7) / 16, (2.0 * y - 7) / 16 };
+		return tempLong;
+	}
+
     public int getX() { return x; }
     public int getY() { return y; }
     public void setX(int i) { x = i; }
