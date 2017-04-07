@@ -5,29 +5,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Board : Singleton<Board> {
+public class Board : Singleton<Board>
+{
+    public enum PlayerE
+    {
+        White = 0,
+        Black = 1
+    };
+
     bool gameActive;
-    bool turn = true;
+    int turn = (int) PlayerE.White;
     bool piecesUpdated = false;
     Piece[,] boardPieces;
-    public Piece currentPiece;
-    public int[,] attackField;
+    History firstHistory, lastHistory;
+    Point enPassant;
+    Piece[] kings;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         boardPieces = new Piece[8, 8];
-        attackField = new int[8, 8];
+        kings = new Piece[2];
         setupBoard();
-        setupAttackField();	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if(piecesUpdated)
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (piecesUpdated)
         {
-            turn = !turn;
             piecesUpdated = false;
-            setupAttackField();
             gameActive = isCheckmate();
         }
         //During Milestone 2, there will be tiles once we integrate the graphics with this code
@@ -36,110 +43,161 @@ public class Board : Singleton<Board> {
         //Next, I will remove any piece currently on that tile from the game
         //I will then update the location of the piece
         //Finally, I will make piecesUpdated true
-	}
+    }
 
-    //First all the pieces are created (Milestone 1)
-    //Then all of the piece game objects are instantiated (Milestone 2)
+    private void switchTurn()
+    {
+        turn += 1;
+        turn %= 2;
+    }
+
+    //This is effectively acting as the constructor for Board
     void setupBoard()
     {
-        boardPieces[0,0] = new Rook(true, 0,0);
-        boardPieces[0, 1] = new Knight(true,0,1);
-        boardPieces[0, 2] = new Bishop(true,0,2);
-        boardPieces[0, 3] = new Queen(true,0,3);
-        boardPieces[0, 4] = new King(true,0,4);
-        boardPieces[0, 5] = new Bishop(true,0,5);
-        boardPieces[0, 6] = new Knight(true,0,6);
-        boardPieces[0, 7] = new Rook(true,0,7);
-        boardPieces[1, 0] = new Pawn(true,1,0);
-        boardPieces[1, 1] = new Pawn(true,1,1);
-        boardPieces[1, 2] = new Pawn(true,1,2);
-        boardPieces[1, 3] = new Pawn(true,1,3);
-        boardPieces[1, 4] = new Pawn(true,1,4);
-        boardPieces[1, 5] = new Pawn(true,1,5);
-        boardPieces[1, 6] = new Pawn(true,1,6);
-        boardPieces[1, 7] = new Pawn(true,1,7);
-        boardPieces[6, 0] = new Pawn(false,6,0);
-        boardPieces[6, 1] = new Pawn(false,6,1);
-        boardPieces[6, 2] = new Pawn(false,6,2);
-        boardPieces[6, 3] = new Pawn(false,6,3);
-        boardPieces[6, 4] = new Pawn(false,6,4);
-        boardPieces[6, 5] = new Pawn(false,6,5);
-        boardPieces[6, 6] = new Pawn(false,6,6);
-        boardPieces[6, 7] = new Pawn(false,6,7);
-        boardPieces[7, 0] = new Rook(false,7,0);
-        boardPieces[7, 1] = new Knight(false,7,1);
-        boardPieces[7, 2] = new Bishop(false,7,2);
-        boardPieces[7, 3] = new Queen(false,7,3);
-        boardPieces[7, 4] = new King(false,7,4);
-        boardPieces[7, 5] = new Bishop(false,7,5);
-        boardPieces[7, 6] = new Knight(false,7,6);
-        boardPieces[7, 7] = new Rook(false,7,7);
+        boardPieces[0, 0] = new Rook((int)PlayerE.White, 0, 0);
+        boardPieces[0, 1] = new Knight((int)PlayerE.White, 0, 1);
+        boardPieces[0, 2] = new Bishop((int)PlayerE.White, 0, 2);
+        boardPieces[0, 3] = new Queen((int)PlayerE.White, 0, 3);
+        boardPieces[0, 4] = new King((int)PlayerE.White, 0, 4);
+        boardPieces[0, 5] = new Bishop((int)PlayerE.White, 0, 5);
+        boardPieces[0, 6] = new Knight((int)PlayerE.White, 0, 6);
+        boardPieces[0, 7] = new Rook((int)PlayerE.White, 0, 7);
+        boardPieces[1, 0] = new Pawn((int)PlayerE.White, 1, 0);
+        boardPieces[1, 1] = new Pawn((int)PlayerE.White, 1, 1);
+        boardPieces[1, 2] = new Pawn((int)PlayerE.White, 1, 2);
+        boardPieces[1, 3] = new Pawn((int)PlayerE.White, 1, 3);
+        boardPieces[1, 4] = new Pawn((int)PlayerE.White, 1, 4);
+        boardPieces[1, 5] = new Pawn((int)PlayerE.White, 1, 5);
+        boardPieces[1, 6] = new Pawn((int)PlayerE.White, 1, 6);
+        boardPieces[1, 7] = new Pawn((int)PlayerE.White, 1, 7);
+        boardPieces[6, 0] = new Pawn((int)PlayerE.Black, 6, 0);
+        boardPieces[6, 1] = new Pawn((int)PlayerE.Black, 6, 1);
+        boardPieces[6, 2] = new Pawn((int)PlayerE.Black, 6, 2);
+        boardPieces[6, 3] = new Pawn((int)PlayerE.Black, 6, 3);
+        boardPieces[6, 4] = new Pawn((int)PlayerE.Black, 6, 4);
+        boardPieces[6, 5] = new Pawn((int)PlayerE.Black, 6, 5);
+        boardPieces[6, 6] = new Pawn((int)PlayerE.Black, 6, 6);
+        boardPieces[6, 7] = new Pawn((int)PlayerE.Black, 6, 7);
+        boardPieces[7, 0] = new Rook((int)PlayerE.Black, 7, 0);
+        boardPieces[7, 1] = new Knight((int)PlayerE.Black, 7, 1);
+        boardPieces[7, 2] = new Bishop((int)PlayerE.Black, 7, 2);
+        boardPieces[7, 3] = new Queen((int)PlayerE.Black, 7, 3);
+        boardPieces[7, 4] = new King((int)PlayerE.Black, 7, 4);
+        boardPieces[7, 5] = new Bishop((int)PlayerE.Black, 7, 5);
+        boardPieces[7, 6] = new Knight((int)PlayerE.Black, 7, 6);
+        boardPieces[7, 7] = new Rook((int)PlayerE.Black, 7, 7);
 
-        //In Milestone 2, part of project is making game objects of these pieces
+        kings[0] = boardPieces[0, 4];
+        kings[1] = boardPieces[7, 4];
+
+        firstHistory = null;
+        lastHistory = null;
+        enPassant = null;
     }
 
-    //Each point has value 0,1,2,3:
-    //0 - No piece can interact with this square
-    //1 - Only a piece of the current turn's color can interact with this square
-    //2 - Only a piece of the opposite turn's color can interact with this square
-    //3 - At least one piece from each side can interact with this square
-    private void setupAttackField()
+    //Returns the piece located at the point p (null if no piece)
+    public Piece pieceAt(Point p)
     {
-        for(int i = 0; i < 7; i ++)
-            for(int j = 0; j < 7; j++)
-            {
-                attackField[i, j] = 0;
-                Piece thisPiece = boardPieces[i, j];
-                if(thisPiece && thisPiece.allegiance ^ turn)
-                {
-                    thisPiece.findValidSpaces();
-                }
-            }
+        return boardPieces[p.getX() , p.getY()];
+    }
+
+    //Returns the piece located at (x,y) (null if no piece)
+    public Piece pieceAt(int x, int y)
+    {
+        return boardPieces[x, y];
+    }
+
+    //Moves the piece located at the point p to the point pt
+    public void placePieceAt(Piece p, Point pt)
+    {
+        boardPieces[pt.getX(), pt.getY()] = p;
+    }
+
+    //Moves the piece at the point p1 to p2 (calls the 3 paramater function with the third point null)
+    public void Move(Point p1, Point p2)
+    {
+        Move(p1, p2, null);
+    }
+
+    //Moves the piece at the point p1 to p2 and sets enpassant to ep
+    //Updates the game history
+    //Switches the current turn
+    public void Move(Point p1, Point p2, Point ep)
+    {
+        History temp_hist = new History(p1, p2, this, lastHistory);
+        lastHistory.setNext(temp_hist);
+        lastHistory = temp_hist;
+        enPassant = ep;
+        switchTurn();
+        placePieceAt(pieceAt(p1), p2);
+        boardPieces[p1.getX(), p1.getY()] = null;
+    }
+
+    //Calls tryToMove for the piece at p1 to move to p2
+    public void tryToMove(Point p1, Point p2)
+    {
+        Piece temp_piece = pieceAt(p1);
+        if (temp_piece != null)
+        {
+            temp_piece.tryToMove(p2);
+        }
+    }
+
+    //Kills the piece at enPassant
+    public void killEnPassant()
+    {
+        boardPieces[enPassant.getX(), enPassant.getY()] = null;
+    }
+
+    //Tests if moving a piece from start to finish would put the current turn's king in check
+    public bool inCheck(Point start, Point finish)
+    {
+        Piece startPiece = boardPieces[start.getX(), start.getY()];
+        Piece finishPiece = boardPieces[finish.getX(), finish.getY()];
+
+        boardPieces[finish.getX(), finish.getY()] = startPiece;
+
+        bool flag = inCheck(kings[turn].getLoc());
+        boardPieces[start.getX(), start.getY()] = startPiece;
+        boardPieces[finish.getX(), finish.getY()] = finishPiece;
+
+        return flag;
+    }
+
+    //Tests if any enemy piece can move to the current space (where the king is)
+    public bool inCheck(Point p)
+    {
         for(int i = 0; i < 7; i++)
             for(int j = 0; j < 7; j++)
-            {
-                //For Milestone 2
-                //Sketch:
-                //IF tile(i,j) is highlighted
-                //      attackField(i,j) += 1;
-            }
-        unhighlight();
-        for (int i = 0; i < 7; i++)
-            for (int j = 0; j < 7; j++)
-            {
-                attackField[i, j] = 0;
-                Piece thisPiece = boardPieces[i, j];
-                if (thisPiece && !(thisPiece.allegiance ^ turn))
-                {
-                    thisPiece.findValidSpaces();
-                }
-            }
-        for (int i = 0; i < 7; i++)
-            for (int j = 0; j < 7; j++)
-            {
-                //For Milestone 2
-                //Sketch:
-                //IF tile(i,j) is highlighted
-                //      attackField(i,j) += 2;
-            }
-        unhighlight();
+                if(boardPieces[i,j] != null && boardPieces[i,j].getAllegiance() != turn)
+                    if (boardPieces[i, j].canMove(p) != Piece.MoveTypesE.ILLEGAL)
+                        return true;
+        return false;
     }
 
-    //0 means no piece at location
-    //1 means enemy piece at location
-    //2 means friendly piece at location
-    public int pieceAtSpace(int x, int y, bool inType)
+    //Tests if you pick up notKing and king, if the king is placed at (xloc, yloc) then if the king is in check
+    //Used for castling
+    public bool inCheck(Piece notKing, Piece king, int xloc, int yloc)
     {
-        Piece thisPiece = boardPieces[x, y];
-        if (!thisPiece)
-        {
-            return 0;
-        }
-        if (thisPiece.allegiance ^ inType)
-        {
-            return 1;
-        }
-        return 2;
+        boardPieces[notKing.getLoc().getX(), notKing.getLoc().getY()] = null;
+        boardPieces[king.getLoc().getX(), king.getLoc().getY()] = null;
+        bool flag = inCheck(new Point(xloc, yloc));
+        boardPieces[notKing.getLoc().getX(), notKing.getLoc().getY()] = notKing;
+        boardPieces[king.getLoc().getX(), king.getLoc().getY()] = king;
+        return flag;
+    }
+    
+    //Promotes the pawn at p
+    //Currently promotes it to queen until we figure out how to prompt the user
+    public void promotePawn(Point p)
+    {
+        boardPieces[p.getX(), p.getY()] = new Queen(turn, p.getX(), p.getY());
+    }
+
+    //Gets the point enPassant refers to currently
+    public Point getEnPassant()
+    {
+        return enPassant;
     }
 
     //Highlights square (x,y)
@@ -158,78 +216,6 @@ public class Board : Singleton<Board> {
     //Milestone 2 will include a search table to figure out if there is another way to prevent checkmate (blocking)
     bool isCheckmate()
     {
-        bool flag = true;
-        for(int i = 0; i < 7 && flag; i++)
-        {
-            for(int j = 0; j < 7 && flag; j++)
-            {
-                Piece thisPiece = boardPieces[i, j];
-                if(thisPiece.GetType() == typeof(King) && thisPiece.allegiance == turn && attackField[i,j] > 1)
-                {
-                    bool[] whichEdges = { true, true, true, true, true, true, true, true };
-                    if (i == 0)
-                    {
-                        whichEdges[5] = false;
-                        whichEdges[6] = false;
-                        whichEdges[7] = false;
-                    }
-                    if (i == 7)
-                    {
-                        whichEdges[1] = false;
-                        whichEdges[2] = false;
-                        whichEdges[3] = false;
-                    }
-                    if (j == 0)
-                    {
-                        whichEdges[3] = false;
-                        whichEdges[4] = false;
-                        whichEdges[5] = false;
-                    }
-                    if (j == 7)
-                    {
-                        whichEdges[7] = false;
-                        whichEdges[0] = false;
-                        whichEdges[1] = false;
-                    }
-                    if (whichEdges[0] && attackField[i, j + 1] > 1)
-                    {
-                        whichEdges[0] = false;
-                    }
-                    if (whichEdges[1] && attackField[i+1, j + 1] > 1)
-                    {
-                        whichEdges[1] = false;
-                    }
-                    if (whichEdges[2] && attackField[i+1, j] > 1)
-                    {
-                        whichEdges[2] = false;
-                    }
-                    if (whichEdges[3] && attackField[i+1, j - 1] > 1)
-                    {
-                        whichEdges[3] = false;
-                    }
-                    if (whichEdges[4] && attackField[i, j - 1] > 1)
-                    {
-                        whichEdges[4] = false;
-                    }
-                    if (whichEdges[5] && attackField[i-1, j - 1] > 1)
-                    {
-                        whichEdges[5] = false;
-                    }
-                    if (whichEdges[6] && attackField[i-1, j] > 1)
-                    {
-                        whichEdges[6] = false;
-                    }
-                    if (whichEdges[7] && attackField[i-1, j + 1] > 1)
-                    {
-                        whichEdges[7] = false;
-                    }
-                    if (!whichEdges[0] && !whichEdges[1] && !whichEdges[2] && !whichEdges[3] && !whichEdges[4] && !whichEdges[5] && !whichEdges[6] && !whichEdges[7])
-                        return true;
-                    else
-                        flag = false;
-                }
-            }
-        }
         return false;
     }
 
