@@ -20,9 +20,9 @@ public class Point{
         y = j;
     }
 
-	public long[] turnToWorld()
+	public float[] turnToWorld()
 	{
-		long[] tempLong = { (2.0 * x - 7) / 16, (2.0 * y - 7) / 16 };
+		float[] tempLong = { (2.0f * x - 7) / 16, (2.0f * y - 7) / 16 };
 		return tempLong;
 	}
 

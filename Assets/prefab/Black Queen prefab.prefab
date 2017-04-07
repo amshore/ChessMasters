@@ -210,3 +210,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allegiance: 1
+  Whiteprefab: {fileID: 1873407900237012, guid: e741bf65fbec94f45987a03e826d3c0a,
+    type: 2}
+  Blackprefab: {fileID: 1456321543846052}

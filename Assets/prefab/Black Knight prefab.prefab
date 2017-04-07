@@ -37,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1178951763100042}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -0.31300002, y: 0.29535213, z: 0.43899998}
+  m_LocalPosition: {x: 0.31399, y: 0.299, z: 0.44717002}
   m_LocalScale: {x: 0.85311264, y: 0.8531124, z: 0.8531124}
   m_Children: []
   m_Father: {fileID: 0}
@@ -111,3 +111,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allegiance: 1
+  Whiteprefab: {fileID: 1738728039111726, guid: a1e2e997e10f04609b7129f9bb84f83e,
+    type: 2}
+  Blackprefab: {fileID: 1178951763100042}

@@ -40,6 +40,8 @@ abstract public class Piece : MonoBehaviour {
     public int allegiance;
     protected Point loc;
     protected PieceTypeE type;
+	public GameObject Whiteprefab;
+	public GameObject Blackprefab;
 
     //Default constructor, should never be used
     public Piece()
