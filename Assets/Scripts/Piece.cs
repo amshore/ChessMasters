@@ -62,6 +62,10 @@ abstract public class Piece : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         gameBoard = Board.Instance;
+		if(allegiance == 0)
+			Instantiate(Whiteprefab, new Vector3(loc.turnToWorld()[0], 0.25f, loc.turnToWorld()[1]), Quaternion.identity);
+		else
+			Instantiate(Blackprefab, new Vector3(loc.turnToWorld()[0], 0.25f, loc.turnToWorld()[1]), Quaternion.identity);
 	}
 	
 	// Update is called once per frame

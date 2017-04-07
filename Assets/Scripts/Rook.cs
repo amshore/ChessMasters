@@ -10,10 +10,7 @@ public class Rook : Piece {
 
     public Rook(int all, Point p, Board b, PieceTypeE t) : base(all, p, b, t)
     {
-		if(all == 0)
-			Instantiate(Whiteprefab, new Vector3(p.turnToWorld()[0], 0.25f, p.turnToWorld()[1]), Quaternion.identity);
-		else
-			Instantiate(Blackprefab, new Vector3(p.turnToWorld()[0], 0.25f, p.turnToWorld()[1]), Quaternion.identity);
+		
     }
 
     //Calculate points can move to moving along files and ranks until finding an illegal position
