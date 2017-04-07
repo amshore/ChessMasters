@@ -84,7 +84,7 @@ GameObject:
   - component: {fileID: 95103164938251596}
   - component: {fileID: 114586436806427848}
   m_Layer: 0
-  m_Name: Black King
+  m_Name: Black King prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -313,3 +313,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c7dae431ad1a4fcebf697289b729ea5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allegiance: 0
