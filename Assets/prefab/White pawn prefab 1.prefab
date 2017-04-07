@@ -128,6 +128,7 @@ GameObject:
   - component: {fileID: 4885258737171506}
   - component: {fileID: 95336202349356746}
   - component: {fileID: 114956929588984678}
+  - component: {fileID: 65649861452363540}
   m_Layer: 0
   m_Name: White pawn prefab 1
   m_TagString: Untagged
@@ -237,7 +238,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1830649645806748}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.317, y: 0.25, z: -0.316}
+  m_LocalPosition: {x: 0.43236008, y: 0.25, z: -0.31105062}
   m_LocalScale: {x: 0.5249787, y: 0.52497834, z: 0.52497834}
   m_Children:
   - {fileID: 4615751449763090}
@@ -314,6 +315,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1532434523594856}
   m_Mesh: {fileID: 4300000, guid: 7e26ced9a1ec74dd9bbdcac6d631e96f, type: 3}
+--- !u!65 &65649861452363540
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1830649645806748}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 0.1, z: 0.1}
+  m_Center: {x: 0, y: 0.075, z: 0}
 --- !u!95 &95336202349356746
 Animator:
   serializedVersion: 3

@@ -83,6 +83,7 @@ GameObject:
   - component: {fileID: 4960459922852708}
   - component: {fileID: 95103164938251596}
   - component: {fileID: 114586436806427848}
+  - component: {fileID: 65568201542806110}
   m_Layer: 0
   m_Name: Black King prefab
   m_TagString: Untagged
@@ -285,6 +286,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1351874641197606}
   m_Mesh: {fileID: 4300000, guid: 81ebdb5408787428e84b7bfef9202ba6, type: 3}
+--- !u!65 &65568201542806110
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1680858153906462}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 0.5, z: 0.1}
+  m_Center: {x: 0.1, y: 0.3, z: -0.1}
 --- !u!95 &95103164938251596
 Animator:
   serializedVersion: 3
@@ -314,3 +327,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allegiance: 1
+  Whiteprefab: {fileID: 0}
+  Blackprefab: {fileID: 0}

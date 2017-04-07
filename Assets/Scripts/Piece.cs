@@ -56,6 +56,7 @@ abstract public class Piece : MonoBehaviour {
         loc = p;
         gameBoard = b;
         type = t;
+		Debug.Log ("piece Created " + p.getX() + ", " + p.getY());
     }
 
 	// Use this for initialization

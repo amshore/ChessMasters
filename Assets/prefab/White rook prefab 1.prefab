@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 23556435249501944}
   - component: {fileID: 95356173950126908}
   - component: {fileID: 114118393821508826}
+  - component: {fileID: 65722036002254792}
   m_Layer: 0
   m_Name: White rook prefab 1
   m_TagString: Untagged
@@ -82,6 +83,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1559312313010798}
   m_Mesh: {fileID: 4300000, guid: ea316dd3f49354911a1b288b069d1b02, type: 3}
+--- !u!65 &65722036002254792
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1559312313010798}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 0.1, z: 0.1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &95356173950126908
 Animator:
   serializedVersion: 3
