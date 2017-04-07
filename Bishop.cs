@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Bishop : Piece {
 
@@ -7,9 +8,49 @@ public class Bishop : Piece {
 
     }
 
-    public Bishop(int all, Point p, Board b) : base(all, p, b)
+    public Bishop(int all, Point p, Board b, PieceTypeE t) : base(all, p, b, t)
     {
 
+    }
+
+    //Create list of valid moves moving along diagonal until finding illegal move
+    override public List<Point> canMoveList()
+    {
+        List<Point> retMoveList = new List<Point>();
+        bool[] flagArray = { true, true, true, true };
+        for (int i = 1; flagArray[0] && i < 8; i++)
+        {
+            Point p = new Point(loc.getX() + i, loc.getY() + i);
+            if (canMove(p) == MoveTypesE.ILLEGAL)
+                flagArray[0] = false;
+            else
+                retMoveList.Add(p);
+        }
+        for (int i = 1; flagArray[1] && i < 8; i++)
+        {
+            Point p = new Point(loc.getX() - i, loc.getY() + i);
+            if (canMove(p) == MoveTypesE.ILLEGAL)
+                flagArray[1] = false;
+            else
+                retMoveList.Add(p);
+        }
+        for (int i = 1; flagArray[2] && i < 8; i++)
+        {
+            Point p = new Point(loc.getX() + i, loc.getY() - i);
+            if (canMove(p) == MoveTypesE.ILLEGAL)
+                flagArray[2] = false;
+            else
+                retMoveList.Add(p);
+        }
+        for (int i = 1; flagArray[3] && i < 8; i++)
+        {
+            Point p = new Point(loc.getX() - i, loc.getY() - i);
+            if (canMove(p) == MoveTypesE.ILLEGAL)
+                flagArray[3] = false;
+            else
+                retMoveList.Add(p);
+        }
+        return retMoveList;
     }
 
     //The bishop moves to any square (except as limited by Article 4.2) on the diagonals on which it stands.
