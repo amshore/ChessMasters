@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Pawn : Piece {
 
@@ -12,9 +13,29 @@ public class Pawn : Piece {
     }
 
     //Calls the base constructor and sets direction
-    public Pawn(int all, Point p, Board b) : base(all, p, b)
+    public Pawn(int all, Point p, Board b, PieceTypeE t) : base(all, p, b,t)
     {
         direction = (all == 0)? 1 : -1;
+    }
+
+    //Calculates all spaces in box around piece to see if legal
+    public override List<Point> canMoveList()
+    {
+        List<Point> retMoveList = new List<Point>();
+        for(int i = -1; i <= 1; i++)
+            for(int j = -1; j <= 1; j++)
+            {
+                Point pt = new Point(i, j);
+                if (canMove(pt) != MoveTypesE.ILLEGAL)
+                    retMoveList.Add(pt);
+            }
+        if(!hasMoved)
+        {
+            Point pt = new Point(loc.getX(), loc.getY() + 2 * direction);
+            if (canMove(pt) != MoveTypesE.ILLEGAL)
+                retMoveList.Add(pt);
+        }
+        return retMoveList;
     }
 
     //(a) The pawn may move only forward[except as limited by Article 4.2].

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class King : Piece {
 
@@ -7,9 +8,32 @@ public class King : Piece {
 
     }
 
-    public King(int all, Point p, Board b) : base(all, p, b)
+    public King(int all, Point p, Board b, PieceTypeE t) : base(all, p, b, t)
     {
 
+    }
+
+    //Calculates all spaces in box around piece to see if legal
+    public override List<Point> canMoveList()
+    {
+        List<Point> retMoveList = new List<Point>();
+        for (int i = -1; i <= 1; i++)
+            for (int j = -1; j <= 1; j++)
+            {
+                Point pt = new Point(i, j);
+                if (canMove(pt) != MoveTypesE.ILLEGAL)
+                    retMoveList.Add(pt);
+            }
+        if (!hasMoved)
+        {
+            Point pt = new Point(loc.getX()+2, loc.getY());
+            if (canMove(pt) != MoveTypesE.ILLEGAL)
+                retMoveList.Add(pt);
+            Point pt1 = new Point(loc.getX() - 2, loc.getY());
+            if (canMove(pt1) != MoveTypesE.ILLEGAL)
+                retMoveList.Add(pt1);
+        }
+        return retMoveList;
     }
 
     //(a) Except when castling, the king moves to any adjoining square that is not attacked by an opponent's piece.

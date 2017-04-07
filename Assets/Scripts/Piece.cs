@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 abstract public class Piece : MonoBehaviour {
 
@@ -13,11 +14,32 @@ abstract public class Piece : MonoBehaviour {
         PROMOTE
     };
 
+    public enum PieceTypeE
+    {
+        PAWN,
+        ROOK,
+        KNIGHT,
+        BISHOP,
+        KING,
+        QUEEN
+    };
+
+    public enum PieceWeightsE: int
+    {
+        PAWNWEIGHT = 1,
+        ROOKWEIGHT = 1,
+        KNIGHTWEIGHT = 1,
+        BISHOPWEIGHT = 1,
+        KINGWEIGHT = 1,
+        QUEENWEIGHT = 1
+    };
+
     protected bool hasMoved = false;
     bool notClicked = true;
     protected Board gameBoard;
     public int allegiance;
     protected Point loc;
+    protected PieceTypeE type;
 
     //Default constructor, should never be used
     public Piece()
@@ -26,11 +48,12 @@ abstract public class Piece : MonoBehaviour {
     }
 
     //Constructor with color, location, and a reference to the board
-    public Piece(int all, Point p, Board b)
+    public Piece(int all, Point p, Board b, PieceTypeE t)
     {
         allegiance = all;
         loc = p;
         gameBoard = b;
+        type = t;
     }
 
 	// Use this for initialization
@@ -53,6 +76,13 @@ abstract public class Piece : MonoBehaviour {
         return hasMoved;
     }
 
+    //Calculates an array of points piece can legally move to
+    //Have to override
+    public virtual List<Point> canMoveList()
+    {
+        return null;
+    }
+
     //The default canMove function, should always be overwritten
     //This is called for each subpiece and determines if:
     // (a) The piece is moved into the board (ILLEGAL if outside the board)
@@ -61,6 +91,8 @@ abstract public class Piece : MonoBehaviour {
     // (d) The piece at the spot moving to is of the same color (CAPTURE if opposite)
     public virtual MoveTypesE canMove(Point p)
     {
+        if (p.getX() == loc.getX() && p.getY() == loc.getY())
+            return MoveTypesE.ILLEGAL;
         if((p.getX() >= 0) && (p.getX() <= 7) && (p.getY() >= 0) && (p.getY() <= 7))
         {
             if (gameBoard.inCheck(loc, p))
@@ -91,6 +123,12 @@ abstract public class Piece : MonoBehaviour {
         }
     }
 
+    //Returns what type of piece this is
+    public PieceTypeE getType()
+    {
+        return type;
+    }
+
     //Returns the allegiance (0 for WHITE and 1 for BLACK)
     public int getAllegiance()
     {
@@ -115,10 +153,31 @@ abstract public class Piece : MonoBehaviour {
         return loc;
     }
 
+    public int getPieceScore()
+    {
+        switch (type)
+        {
+            case PieceTypeE.PAWN:
+                return (int)PieceWeightsE.PAWNWEIGHT;
+            case PieceTypeE.ROOK:
+                return (int)PieceWeightsE.ROOKWEIGHT;
+            case PieceTypeE.KNIGHT:
+                return (int)PieceWeightsE.KINGWEIGHT;
+            case PieceTypeE.BISHOP:
+                return (int)PieceWeightsE.BISHOPWEIGHT;
+            case PieceTypeE.QUEEN:
+                return (int)PieceWeightsE.QUEENWEIGHT;
+            case PieceTypeE.KING:
+                return (int)PieceWeightsE.KINGWEIGHT;
+            default:
+                return 0;
+
+        }
+    }
+
     //Used for highlighting the piece
     void OnMouseEnter()
     {
-        findValidSpaces();
         GetComponent<Renderer>().material.shader = Shader.Find("Outlined/Silhouetted Diffuse");
     }
 
@@ -129,10 +188,6 @@ abstract public class Piece : MonoBehaviour {
         {
             GetComponent<Renderer>().material.shader = Shader.Find("Standard");
             gameBoard.unhighlight();
-        }
-        else
-        {
-            gameBoard.currentPiece = this;
         }
     }
 }

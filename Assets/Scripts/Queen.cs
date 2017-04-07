@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Queen : Piece {
 
@@ -7,9 +8,82 @@ public class Queen : Piece {
 
     }
 
-    public Queen(int all, int x, int y): base(all, x, y)
+    public Queen(int all, Point p, Board b, PieceTypeE t) : base(all, p, b, t)
     {
 
+    }
+
+    //Create list of valid moves moving along diagonal, file, rank until finding illegal move
+    //Queen has way too many possible moves!
+    override public List<Point> canMoveList()
+    {
+        List<Point> retMoveList = new List<Point>();
+        bool[] flagArray = { true, true, true, true, true, true, true, true};
+        for (int i = 1; flagArray[0] && i < 8; i++)
+        {
+            Point p = new Point(loc.getX() + i, loc.getY() + i);
+            if (canMove(p) == MoveTypesE.ILLEGAL)
+                flagArray[0] = false;
+            else
+                retMoveList.Add(p);
+        }
+        for (int i = 1; flagArray[1] && i < 8; i++)
+        {
+            Point p = new Point(loc.getX() - i, loc.getY() + i);
+            if (canMove(p) == MoveTypesE.ILLEGAL)
+                flagArray[1] = false;
+            else
+                retMoveList.Add(p);
+        }
+        for (int i = 1; flagArray[2] && i < 8; i++)
+        {
+            Point p = new Point(loc.getX() + i, loc.getY() - i);
+            if (canMove(p) == MoveTypesE.ILLEGAL)
+                flagArray[2] = false;
+            else
+                retMoveList.Add(p);
+        }
+        for (int i = 1; flagArray[3] && i < 8; i++)
+        {
+            Point p = new Point(loc.getX() - i, loc.getY() - i);
+            if (canMove(p) == MoveTypesE.ILLEGAL)
+                flagArray[3] = false;
+            else
+                retMoveList.Add(p);
+        }
+        for (int i = 1; flagArray[4] && i < 8; i++)
+        {
+            Point p = new Point(loc.getX() + i, loc.getY());
+            if (canMove(p) == MoveTypesE.ILLEGAL)
+                flagArray[0] = false;
+            else
+                retMoveList.Add(p);
+        }
+        for (int i = 1; flagArray[5] && i < 8; i++)
+        {
+            Point p = new Point(loc.getX(), loc.getY() + i);
+            if (canMove(p) == MoveTypesE.ILLEGAL)
+                flagArray[1] = false;
+            else
+                retMoveList.Add(p);
+        }
+        for (int i = 1; flagArray[6] && i < 8; i++)
+        {
+            Point p = new Point(loc.getX() - i, loc.getY());
+            if (canMove(p) == MoveTypesE.ILLEGAL)
+                flagArray[2] = false;
+            else
+                retMoveList.Add(p);
+        }
+        for (int i = 1; flagArray[7] && i < 8; i++)
+        {
+            Point p = new Point(loc.getX(), loc.getY() - i);
+            if (canMove(p) == MoveTypesE.ILLEGAL)
+                flagArray[3] = false;
+            else
+                retMoveList.Add(p);
+        }
+        return retMoveList;
     }
 
     //The queen moves to any square (except as limited by Article 4.2) [No leapfrogging] on the file, rank, or diagonals on which it stands.
