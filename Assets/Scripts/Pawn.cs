@@ -41,6 +41,15 @@ public class Pawn : Piece {
             if (canMove(pt) != MoveTypesE.ILLEGAL)
                 retMoveList.Add(pt);
         }
+
+        Debug.Log("Pawn at (" + loc.getX() + ", " + loc.getY() + ") can move to: ");
+        foreach (Point p in retMoveList)
+        {
+            Debug.Log("(" + p.getX() + ", " + p.getY() + ")");
+        }
+        if (retMoveList.Count == 0)
+            Debug.Log("No Possible Moves");
+
         return retMoveList;
     }
 
@@ -59,10 +68,14 @@ public class Pawn : Piece {
         int dx = p.getX() - loc.getX();
         if (dy == direction)
         {
-            Piece pAt = gameBoard.pieceAt(p);
+            Piece pAt;
+            if (gameBoard.pieceAt(p) == null)
+                pAt = null;
+            else
+                pAt = (Piece)gameBoard.pieceAt(p).GetComponent("Piece");
             if ((System.Math.Abs(dx) == 1) && pAt == null)
             {
-                if (gameBoard.getEnPassant() == p)
+                if (gameBoard.getEnPassant() != null && gameBoard.getEnPassant() == p)
                     return MoveTypesE.ENPASSANT;
             }
             else if ((System.Math.Abs(dx) == 1) && (allegiance == pAt.getAllegiance()))

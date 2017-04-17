@@ -19,7 +19,7 @@ public class History {
         board = b;
         prev = p;
         next = null;
-        killedPiece = board.pieceAt(to);
+        killedPiece = (Piece)board.pieceAt(to).GetComponent("Piece");
     }
 
     public void setNext(History n)

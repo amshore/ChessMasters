@@ -33,6 +33,15 @@ public class King : Piece {
             if (canMove(pt1) != MoveTypesE.ILLEGAL)
                 retMoveList.Add(pt1);
         }
+
+        Debug.Log("King at (" + loc.getX() + ", " + loc.getY() + ") can move to: ");
+        foreach (Point p in retMoveList)
+        {
+            Debug.Log("(" + p.getX() + ", " + p.getY() + ")");
+        }
+        if (retMoveList.Count == 0)
+            Debug.Log("No Possible Moves");
+
         return retMoveList;
     }
 
@@ -68,10 +77,10 @@ public class King : Piece {
                     if (gameBoard.pieceAt(i, loc.getY()) != null)
                         return MoveTypesE.ILLEGAL;
                 }
-                Piece rookMaybe = gameBoard.pieceAt(7, loc.getY());
-                if (rookMaybe == null || rookMaybe.getHasMoved())
+                GameObject rookMaybe = gameBoard.pieceAt(7, loc.getY());
+                if (rookMaybe == null || ((Piece)rookMaybe.GetComponent("Piece")).getHasMoved())
                     return MoveTypesE.ILLEGAL;
-                if (!gameBoard.inCheck(this, rookMaybe, loc.getX() + 1, loc.getY()) && !gameBoard.inCheck(this, rookMaybe, loc.getX() + 2, loc.getY()))
+                if (!gameBoard.inCheck(gameObject, rookMaybe, loc.getX() + 1, loc.getY()) && !gameBoard.inCheck(gameObject, rookMaybe, loc.getX() + 2, loc.getY()))
                     return MoveTypesE.ILLEGAL;
             }
             else
@@ -81,10 +90,10 @@ public class King : Piece {
                     if (gameBoard.pieceAt(i, loc.getY()) != null)
                         return MoveTypesE.ILLEGAL;
                 }
-                Piece rookMaybe = gameBoard.pieceAt(0, loc.getY());
-                if (rookMaybe == null || rookMaybe.getHasMoved())
+                GameObject rookMaybe = gameBoard.pieceAt(0, loc.getY());
+                if (rookMaybe == null || ((Piece)rookMaybe.GetComponent("Piece")).getHasMoved())
                     return MoveTypesE.ILLEGAL;
-                if (!gameBoard.inCheck(this, rookMaybe, loc.getX() - 1, loc.getY()) && !gameBoard.inCheck(this, rookMaybe, loc.getX() - 2, loc.getY()))
+                if (!gameBoard.inCheck(gameObject, rookMaybe, loc.getX() - 1, loc.getY()) && !gameBoard.inCheck(gameObject, rookMaybe, loc.getX() - 2, loc.getY()))
                     return MoveTypesE.ILLEGAL;
             }
             return MoveTypesE.CASTLE;

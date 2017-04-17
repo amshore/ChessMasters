@@ -82,6 +82,15 @@ public class Queen : Piece {
             else
                 retMoveList.Add(p);
         }
+
+        Debug.Log("Queen at (" + loc.getX() + ", " + loc.getY() + ") can move to: ");
+        foreach (Point p in retMoveList)
+        {
+            Debug.Log("(" + p.getX() + ", " + p.getY() + ")");
+        }
+        if (retMoveList.Count == 0)
+            Debug.Log("No Possible Moves");
+
         return retMoveList;
     }
 

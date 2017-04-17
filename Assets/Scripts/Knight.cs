@@ -40,6 +40,15 @@ public class Knight : Piece {
             retMoveList.Add(p7);
         if (canMove(p8) != MoveTypesE.ILLEGAL)
             retMoveList.Add(p8);
+
+        Debug.Log("Knight at (" + loc.getX() + ", " + loc.getY() + ") can move to: ");
+        foreach (Point p in retMoveList)
+        {
+            Debug.Log("(" + p.getX() + ", " + p.getY() + ")");
+        }
+        if (retMoveList.Count == 0)
+            Debug.Log("No Possible Moves");
+
         return retMoveList;
     }
 

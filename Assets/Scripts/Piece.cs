@@ -89,6 +89,12 @@ abstract public class Piece : MonoBehaviour {
         return hasMoved;
     }
 
+    public void moveObjectLoc(Point pt)
+    {
+        loc = pt;
+        gameObject.transform.position = new Vector3(pt.turnToWorld()[0], 1f, pt.turnToWorld()[1]);
+    }
+
     //Calculates an array of points piece can legally move to
     //Have to override
     public virtual List<Point> canMoveList()
@@ -108,15 +114,15 @@ abstract public class Piece : MonoBehaviour {
             return MoveTypesE.ILLEGAL;
         if((p.getX() >= 0) && (p.getX() <= 7) && (p.getY() >= 0) && (p.getY() <= 7))
         {
-            if (gameBoard.inCheck(loc, p))
+            /*if (gameBoard.inCheck(loc, p))
             {
                 return MoveTypesE.ILLEGAL;
-            }
+            }*/
             if (gameBoard.pieceAt(p) == null)
             {
                 return MoveTypesE.NORMAL;
             }
-            else if (gameBoard.pieceAt(p).getAllegiance() != allegiance)
+            else if (((Piece)gameBoard.pieceAt(p).GetComponent("Piece")).getAllegiance() != allegiance)
                 return MoveTypesE.CAPTURE;
         }
         return MoveTypesE.ILLEGAL;
@@ -189,7 +195,7 @@ abstract public class Piece : MonoBehaviour {
     }
 
     //Used for highlighting the piece
-    void OnMouseEnter()
+    /*void OnMouseEnter()
     {
         GetComponent<Renderer>().material.shader = Shader.Find("Outlined/Silhouetted Diffuse");
     }
@@ -202,5 +208,5 @@ abstract public class Piece : MonoBehaviour {
             GetComponent<Renderer>().material.shader = Shader.Find("Standard");
             gameBoard.unhighlight();
         }
-    }
+    }*/
 }
