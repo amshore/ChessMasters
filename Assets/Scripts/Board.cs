@@ -31,6 +31,18 @@ public class Board : Singleton<Board>
     Point enPassant;
     Piece[] kings;
     public AIE ai;
+    public GameObject whitePawn;
+    public GameObject blackPawn;
+    public GameObject whiteRook;
+    public GameObject blackRook;
+    public GameObject whiteKnight;
+    public GameObject blackKnight;
+    public GameObject whiteBishop;
+    public GameObject blackBishop;
+    public GameObject whiteQueen;
+    public GameObject blackQueen;
+    public GameObject whiteKing;
+    public GameObject blackKing;
 
     // Use this for initialization
     void Start()
@@ -81,59 +93,61 @@ public class Board : Singleton<Board>
     //This is effectively acting as the constructor for Board
     void setupBoard()
     {
-        boardPieces[0, 0] = new Rook((int)PlayerE.White, new Point(0,0), this, Piece.PieceTypeE.ROOK);
-        boardPieces[1, 0] = new Knight((int)PlayerE.White, new Point(1, 0), this, Piece.PieceTypeE.KNIGHT);
-        boardPieces[2, 0] = new Bishop((int)PlayerE.White, new Point(2, 0), this, Piece.PieceTypeE.BISHOP);
-        boardPieces[3, 0] = new Queen((int)PlayerE.White, new Point(3, 0), this, Piece.PieceTypeE.QUEEN);
-        boardPieces[4, 0] = new King((int)PlayerE.White, new Point(4, 0), this, Piece.PieceTypeE.KING);
-        boardPieces[5, 0] = new Bishop((int)PlayerE.White, new Point(5, 0), this, Piece.PieceTypeE.BISHOP);
-        boardPieces[6, 0] = new Knight((int)PlayerE.White, new Point(6, 0), this, Piece.PieceTypeE.KNIGHT);
-        boardPieces[7, 0] = new Rook((int)PlayerE.White, new Point(7, 0), this, Piece.PieceTypeE.ROOK);
-        boardPieces[0, 1] = new Pawn((int)PlayerE.White, new Point(0, 1), this, Piece.PieceTypeE.PAWN);
-        boardPieces[1, 1] = new Pawn((int)PlayerE.White, new Point(1, 1), this, Piece.PieceTypeE.PAWN);
-        boardPieces[2, 1] = new Pawn((int)PlayerE.White, new Point(2, 1), this, Piece.PieceTypeE.PAWN);
-        boardPieces[3, 1] = new Pawn((int)PlayerE.White, new Point(3, 1), this, Piece.PieceTypeE.PAWN);
-        boardPieces[4, 1] = new Pawn((int)PlayerE.White, new Point(4, 1), this, Piece.PieceTypeE.PAWN);
-        boardPieces[5, 1] = new Pawn((int)PlayerE.White, new Point(5, 1), this, Piece.PieceTypeE.PAWN);
-        boardPieces[6, 1] = new Pawn((int)PlayerE.White, new Point(6, 1), this, Piece.PieceTypeE.PAWN);
-        boardPieces[7, 1] = new Pawn((int)PlayerE.White, new Point(7, 1), this, Piece.PieceTypeE.PAWN);
+        generatePiece(PlayerE.White, new Point(0, 0), Piece.PieceTypeE.ROOK, whiteRook, "Rook");
+        generatePiece(PlayerE.White, new Point(0, 1), Piece.PieceTypeE.KNIGHT, whiteKnight, "Knight");
+        generatePiece(PlayerE.White, new Point(0, 2), Piece.PieceTypeE.BISHOP, whiteBishop, "Bishop");
+        generatePiece(PlayerE.White, new Point(0, 3), Piece.PieceTypeE.QUEEN, whiteQueen, "Queen");
+        generatePiece(PlayerE.White, new Point(0, 4), Piece.PieceTypeE.KING, whiteKing, "King");
+        generatePiece(PlayerE.White, new Point(0, 5), Piece.PieceTypeE.BISHOP, whiteBishop, "Bishop");
+        generatePiece(PlayerE.White, new Point(0, 6), Piece.PieceTypeE.KNIGHT, whiteKnight, "Knight");
+        generatePiece(PlayerE.White, new Point(0, 7), Piece.PieceTypeE.ROOK, whiteRook, "Rook");
+        generatePiece(PlayerE.White, new Point(1, 0), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
+        generatePiece(PlayerE.White, new Point(1, 1), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
+        generatePiece(PlayerE.White, new Point(1, 2), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
+        generatePiece(PlayerE.White, new Point(1, 3), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
+        generatePiece(PlayerE.White, new Point(1, 4), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
+        generatePiece(PlayerE.White, new Point(1, 5), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
+        generatePiece(PlayerE.White, new Point(1, 6), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
+        generatePiece(PlayerE.White, new Point(1, 7), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
 
-        for(int i = 0; i < 8; i++)
-        {
-            whiteList.Add(boardPieces[0, i]);
-            whiteList.Add(boardPieces[1, i]);
-        }
-
-
-        boardPieces[0, 6] = new Pawn((int)PlayerE.Black, new Point(0, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[1, 6] = new Pawn((int)PlayerE.Black, new Point(1, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[2, 6] = new Pawn((int)PlayerE.Black, new Point(2, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[3, 6] = new Pawn((int)PlayerE.Black, new Point(3, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[4, 6] = new Pawn((int)PlayerE.Black, new Point(4, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[5, 6] = new Pawn((int)PlayerE.Black, new Point(5, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[6, 6] = new Pawn((int)PlayerE.Black, new Point(6, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[7, 6] = new Pawn((int)PlayerE.Black, new Point(7, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[0, 7] = new Rook((int)PlayerE.Black, new Point(0, 7), this, Piece.PieceTypeE.ROOK);
-        boardPieces[1, 7] = new Knight((int)PlayerE.Black, new Point(1, 7), this, Piece.PieceTypeE.KNIGHT);
-        boardPieces[2, 7] = new Bishop((int)PlayerE.Black, new Point(2, 7), this, Piece.PieceTypeE.BISHOP);
-        boardPieces[3, 7] = new Queen((int)PlayerE.Black, new Point(3, 7), this, Piece.PieceTypeE.QUEEN);
-        boardPieces[4, 7] = new King((int)PlayerE.Black, new Point(4, 7), this, Piece.PieceTypeE.KING);
-        boardPieces[5, 7] = new Bishop((int)PlayerE.Black, new Point(5, 7), this, Piece.PieceTypeE.BISHOP);
-        boardPieces[6, 7] = new Knight((int)PlayerE.Black, new Point(6, 7), this, Piece.PieceTypeE.KING);
-        boardPieces[7, 7] = new Rook((int)PlayerE.Black, new Point(7, 7), this, Piece.PieceTypeE.ROOK);
-
-        for (int i = 0; i < 8; i++)
-        {
-            blackList.Add(boardPieces[6, i]);
-            blackList.Add(boardPieces[7, i]);
-        }
-
-        kings[0] = boardPieces[4, 0];
-        kings[1] = boardPieces[4, 7];
+        generatePiece(PlayerE.Black, new Point(6, 0), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(6, 1), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(6, 2), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(6, 3), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(6, 4), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(6, 5), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(6, 6), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(6, 7), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(7, 0), Piece.PieceTypeE.ROOK, blackRook, "Rook");
+        generatePiece(PlayerE.Black, new Point(7, 1), Piece.PieceTypeE.KNIGHT, blackKnight, "Knight");
+        generatePiece(PlayerE.Black, new Point(7, 2), Piece.PieceTypeE.BISHOP, blackBishop, "Bishop");
+        generatePiece(PlayerE.Black, new Point(7, 3), Piece.PieceTypeE.QUEEN, blackQueen, "Queen");
+        generatePiece(PlayerE.Black, new Point(7, 4), Piece.PieceTypeE.KING, blackKing, "King");
+        generatePiece(PlayerE.Black, new Point(7, 5), Piece.PieceTypeE.BISHOP, blackBishop, "Bishop");
+        generatePiece(PlayerE.Black, new Point(7, 6), Piece.PieceTypeE.KNIGHT, blackKnight, "Knight");
+        generatePiece(PlayerE.Black, new Point(7, 7), Piece.PieceTypeE.ROOK, blackRook, "Rook");
 
         firstHistory = null;
         lastHistory = null;
         enPassant = null;
+    }
+
+    public void generatePiece(PlayerE player, Point p, Piece.PieceTypeE piece, GameObject prefab, string str)
+    {
+        GameObject go = Instantiate(prefab, new Vector3(p.turnToWorld()[0], 0.25f, p.turnToWorld()[1]), Quaternion.identity);
+        ((Piece)go.GetComponent(str)).initialize((int)player, p, this, piece);
+        boardPieces[p.getX(), p.getY()] = (Piece)go.GetComponent(str);
+        if (player == PlayerE.White)
+            whiteList.Add(boardPieces[p.getX(), p.getY()]);
+        else
+            blackList.Add(boardPieces[p.getX(), p.getY()]);
+        if(piece == Piece.PieceTypeE.KING)
+        {
+            if (player == PlayerE.White)
+                kings[0] = boardPieces[p.getX(), p.getY()];
+            else
+                kings[1] = boardPieces[p.getX(), p.getY()];
+        }
     }
 
     //Returns the piece located at the point p (null if no piece)

@@ -26,6 +26,12 @@ public class Point{
 		return tempLong;
 	}
 
+    public static float[] turnToWorld(int x, int y)
+    {
+        float[] tempLong = { (2.0f * x - 7) / 16, (2.0f * y - 7) / 16 };
+        return tempLong;
+    }
+
     public int getX() { return x; }
     public int getY() { return y; }
     public void setX(int i) { x = i; }

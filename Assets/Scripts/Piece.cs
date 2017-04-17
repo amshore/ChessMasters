@@ -49,6 +49,15 @@ abstract public class Piece : MonoBehaviour {
         allegiance = (int)Board.PlayerE.White;
     }
 
+    public virtual void initialize(int all, Point p, Board b, PieceTypeE t)
+    {
+        allegiance = all;
+        loc = p;
+        gameBoard = b;
+        type = t;
+        Debug.Log("piece Created at (x,y): (" + p.getX() + ", " + p.getY() + ")");
+    }
+
     //Constructor with color, location, and a reference to the board
     public Piece(int all, Point p, Board b, PieceTypeE t)
     {
@@ -62,14 +71,11 @@ abstract public class Piece : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         gameBoard = Board.Instance;
-		if(allegiance == 0)
-			Instantiate(Whiteprefab, new Vector3(loc.turnToWorld()[0], 0.25f, loc.turnToWorld()[1]), Quaternion.identity);
-		else
-			Instantiate(Blackprefab, new Vector3(loc.turnToWorld()[0], 0.25f, loc.turnToWorld()[1]), Quaternion.identity);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        //Debug.Log("Piece existing is being Updated!");
         if (Input.GetMouseButtonDown(0))
         {
             notClicked = !notClicked;

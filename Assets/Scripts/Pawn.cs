@@ -15,11 +15,13 @@ public class Pawn : Piece {
     //Calls the base constructor and sets direction
     public Pawn(int all, Point p, Board b, PieceTypeE t) : base(all, p, b,t)
     {
-        direction = (all == 0)? 1 : -1;
-		if(all == 0)
-			Instantiate(Whiteprefab, new Vector3(p.turnToWorld()[0], 0.25f, p.turnToWorld()[1]), Quaternion.identity);
-		else
-			Instantiate(Blackprefab, new Vector3(p.turnToWorld()[0], 0.25f, p.turnToWorld()[1]), Quaternion.identity);
+
+    }
+
+    override public void initialize(int all, Point p, Board b, PieceTypeE t)
+    {
+        base.initialize(all, p, b, t);
+        direction = (all == 0) ? 1 : -1;
     }
 
     //Calculates all spaces in box around piece to see if legal
