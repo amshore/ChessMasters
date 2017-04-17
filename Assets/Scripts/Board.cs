@@ -23,7 +23,7 @@ public class Board : Singleton<Board>
 
     bool gameActive;
     int turn = (int) PlayerE.White;
-    bool piecesUpdated = false;
+    bool piecesUpdated = true;
     GameObject[,] boardPieces;
     List<GameObject> whiteList;
     List<GameObject> blackList;
