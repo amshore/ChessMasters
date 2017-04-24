@@ -1,19 +1,37 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Instance of a queen object.
+/// Can generate a list of valid moves following the
+/// queen movement rules.
+/// </summary>
 public class Queen : Piece {
 
+    /// <summary>
+    /// Default constructor.  Should never be used.
+    /// </summary>
     public Queen()
     {
 
     }
 
+    /// <summary>
+    /// Constructor that should be used.
+    /// </summary>
+    /// <param name="all">Bit representing the color of the Piece.
+    /// White = 0, Black = 1;</param>
+    /// <param name="p">The location of the piece on the board</param>
+    /// <param name="b">A reference to the game board</param>
+    /// <param name="t">The type of piece being created.</param>
     public Queen(int all, Point p, Board b, PieceTypeE t) : base(all, p, b, t)
     {
     }
 
-    //Create list of valid moves moving along diagonal, file, rank until finding illegal move
-    //Queen has way too many possible moves!
+    /// <summary>
+    /// Create list of valid moves moving along diagonal, file, rank until finding illegal move
+    /// </summary>
+    /// <returns>List of valid points the queen can move to</returns>
     override public List<Point> canMoveList()
     {
         List<Point> retMoveList = new List<Point>();
@@ -94,7 +112,11 @@ public class Queen : Piece {
         return retMoveList;
     }
 
-    //The queen moves to any square (except as limited by Article 4.2) [No leapfrogging] on the file, rank, or diagonals on which it stands.
+    /// <summary>
+    /// The queen moves to any square (except as limited by Article 4.2) [No leapfrogging] on the file, rank, or diagonals on which it stands.
+    /// </summary>
+    /// <param name="p">The point the queen is trying to move to</param>
+    /// <returns>The move type for the piece trying to make that move</returns>
     override public MoveTypesE canMove(Point p)
     {
         MoveTypesE mt = base.canMove(p);

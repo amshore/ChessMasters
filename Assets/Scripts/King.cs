@@ -45,16 +45,20 @@ public class King : Piece {
         return retMoveList;
     }
 
-    //(a) Except when castling, the king moves to any adjoining square that is not attacked by an opponent's piece.
-    //(b) Castling is a move of the king and either rook, counting as a single move of the king and executed as follows: the king is transferred from 
-    //its original square two squares toward either rook on the same rank; then that rook is transferred over the king to the square the king has just crossed.
-    //  (e) Castling is [permanently] illegal:
-    //    (i) if the king has already been moved; or
-    //    (ii) with a rook that has already been moved.
-    //  (f) Castling is prevented for the time being:
-    //    (i) if the king's original square, or the square which the king must pass over, or that which it is to occupy, is attacked by an opponent's piece; or
-    //    (ii) if there is any piece between the king and the rook with which castling is to be effected[i.e.castling may still be legal even if the rook is attacked or, 
-    //          when castling queenside, passes over an attacked square] .
+    /// <summary>
+    /// (a) Except when castling, the king moves to any adjoining square that is not attacked by an opponent's piece.
+    /// (b) Castling is a move of the king and either rook, counting as a single move of the king and executed as follows: the king is transferred from 
+    /// its original square two squares toward either rook on the same rank; then that rook is transferred over the king to the square the king has just crossed.
+    ///  (e) Castling is [permanently] illegal:
+    ///    (i) if the king has already been moved; or
+    ///    (ii) with a rook that has already been moved.
+    ///  (f) Castling is prevented for the time being:
+    ///    (i) if the king's original square, or the square which the king must pass over, or that which it is to occupy, is attacked by an opponent's piece; or
+    ///    (ii) if there is any piece between the king and the rook with which castling is to be effected[i.e.castling may still be legal even if the rook is attacked or, 
+    ///          when castling queenside, passes over an attacked square] .
+    /// </summary>
+    /// <param name="p">The point the pawn is trying to move to</param>
+    /// <returns>The move type for the piece trying to make that move</returns>
     override public MoveTypesE canMove(Point p)
     {
         MoveTypesE mt = base.canMove(p);
@@ -102,7 +106,10 @@ public class King : Piece {
         return MoveTypesE.ILLEGAL;
     }
 
-    //Similar tryToMove as the default, but if castling, moves the correct rook to the correct position as well.
+    /// <summary>
+    /// Similar tryToMove as the default, but if castling, moves the correct king to the correct position as well.
+    /// </summary>
+    /// <param name="p"></param>
     public override void tryToMove(Point p)
     {
         MoveTypesE mt = canMove(p);

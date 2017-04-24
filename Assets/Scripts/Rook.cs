@@ -1,19 +1,38 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Instance of a rook object.
+/// Can generate a list of valid moves following the
+/// rook movement rules.
+/// </summary>
 public class Rook : Piece {
 
+    /// <summary>
+    /// Default constructor.  Should never be used.
+    /// </summary>
     public Rook()
     {
 
     }
 
+    /// <summary>
+    /// Constructor that should be used.
+    /// </summary>
+    /// <param name="all">Bit representing the color of the Piece.
+    /// White = 0, Black = 1;</param>
+    /// <param name="p">The location of the piece on the board</param>
+    /// <param name="b">A reference to the game board</param>
+    /// <param name="t">The type of piece being created.</param>
     public Rook(int all, Point p, Board b, PieceTypeE t) : base(all, p, b, t)
     {
 		
     }
 
-    //Calculate points can move to moving along files and ranks until finding an illegal position
+    /// <summary>
+    /// Calculate points can move to moving along files and ranks until finding an illegal position
+    /// </summary>
+    /// <returns>List of points that the piece can move to</returns>
     override public List<Point> canMoveList()
     {
         List<Point> retMoveList = new List<Point>();
@@ -62,7 +81,11 @@ public class Rook : Piece {
         return retMoveList;
     }
 
-    //The rook moves to any square (except as limited by Article 4.2) on the file or rank on which it stands.
+    /// <summary>
+    /// The rook moves to any square (except as limited by Article 4.2) on the file or rank on which it stands.
+    /// </summary>
+    /// <param name="p">The point the piece is trying to move to</param>
+    /// <returns>The move type for the piece trying to make that move</returns>
     override public MoveTypesE canMove(Point p)
     {
         MoveTypesE mt = base.canMove(p);

@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Vuforia;
 
 public class Board : Singleton<Board>
 {
@@ -22,14 +23,18 @@ public class Board : Singleton<Board>
     };
 
     bool gameActive;
+    bool aIUpdated = true;
     int turn = (int) PlayerE.White;
-    bool piecesUpdated = true;
+    bool piecesUpdated = false;
     GameObject[,] boardPieces;
     List<GameObject> whiteList;
     List<GameObject> blackList;
+    List<GameObject> tileList;
     History firstHistory, lastHistory;
     Point enPassant;
     GameObject[] kings;
+    BoardGeneration bg;
+    public int gameMode;
     public AIE ai;
     public GameObject whitePawn;
     public GameObject blackPawn;
@@ -43,22 +48,41 @@ public class Board : Singleton<Board>
     public GameObject blackQueen;
     public GameObject whiteKing;
     public GameObject blackKing;
+    public GameObject tilePrefab;
 
-    // Use this for initialization
-    void Start()
+    private void Awake()
     {
+        bg = new BoardGeneration(this);
         boardPieces = new GameObject[8, 8];
         kings = new GameObject[2];
         whiteList = new List<GameObject>();
         blackList = new List<GameObject>();
-        setupBoard();
-        runEasyAI();
+        tileList = new List<GameObject>();
+    }
+
+    // Use this for initialization
+    void Start()
+    {
+        switch (gameMode)
+        {
+            case 0:
+                bg.defaultSetup();
+                break;
+            default:
+                bg.defaultSetup();
+                break;
+        }
+        firstHistory = null;
+        lastHistory = null;
+        enPassant = null;
+        StartCoroutine("runEasyAI");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (piecesUpdated)
+
+        if (piecesUpdated && aIUpdated)
         {
             piecesUpdated = false;
             gameActive = isCheckmate();
@@ -67,7 +91,7 @@ public class Board : Singleton<Board>
                 case AIE.NONE:
                     break;
                 case AIE.EASY:
-                    runEasyAI();
+                    StartCoroutine("runEasyAI");
                     break;
                 case AIE.NORMAL:
                     runNormalAI();
@@ -89,48 +113,6 @@ public class Board : Singleton<Board>
     {
         turn += 1;
         turn %= 2;
-    }
-
-    //This is effectively acting as the constructor for Board
-    void setupBoard()
-    {
-        generatePiece(PlayerE.White, new Point(0, 0), Piece.PieceTypeE.ROOK, whiteRook, "Rook");
-        generatePiece(PlayerE.White, new Point(0, 1), Piece.PieceTypeE.KNIGHT, whiteKnight, "Knight");
-        generatePiece(PlayerE.White, new Point(0, 2), Piece.PieceTypeE.BISHOP, whiteBishop, "Bishop");
-        generatePiece(PlayerE.White, new Point(0, 3), Piece.PieceTypeE.QUEEN, whiteQueen, "Queen");
-        generatePiece(PlayerE.White, new Point(0, 4), Piece.PieceTypeE.KING, whiteKing, "King");
-        generatePiece(PlayerE.White, new Point(0, 5), Piece.PieceTypeE.BISHOP, whiteBishop, "Bishop");
-        generatePiece(PlayerE.White, new Point(0, 6), Piece.PieceTypeE.KNIGHT, whiteKnight, "Knight");
-        generatePiece(PlayerE.White, new Point(0, 7), Piece.PieceTypeE.ROOK, whiteRook, "Rook");
-        generatePiece(PlayerE.White, new Point(1, 0), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
-        generatePiece(PlayerE.White, new Point(1, 1), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
-        generatePiece(PlayerE.White, new Point(1, 2), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
-        generatePiece(PlayerE.White, new Point(1, 3), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
-        generatePiece(PlayerE.White, new Point(1, 4), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
-        generatePiece(PlayerE.White, new Point(1, 5), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
-        generatePiece(PlayerE.White, new Point(1, 6), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
-        generatePiece(PlayerE.White, new Point(1, 7), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
-
-        generatePiece(PlayerE.Black, new Point(6, 0), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
-        generatePiece(PlayerE.Black, new Point(6, 1), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
-        generatePiece(PlayerE.Black, new Point(6, 2), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
-        generatePiece(PlayerE.Black, new Point(6, 3), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
-        generatePiece(PlayerE.Black, new Point(6, 4), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
-        generatePiece(PlayerE.Black, new Point(6, 5), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
-        generatePiece(PlayerE.Black, new Point(6, 6), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
-        generatePiece(PlayerE.Black, new Point(6, 7), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
-        generatePiece(PlayerE.Black, new Point(7, 0), Piece.PieceTypeE.ROOK, blackRook, "Rook");
-        generatePiece(PlayerE.Black, new Point(7, 1), Piece.PieceTypeE.KNIGHT, blackKnight, "Knight");
-        generatePiece(PlayerE.Black, new Point(7, 2), Piece.PieceTypeE.BISHOP, blackBishop, "Bishop");
-        generatePiece(PlayerE.Black, new Point(7, 3), Piece.PieceTypeE.QUEEN, blackQueen, "Queen");
-        generatePiece(PlayerE.Black, new Point(7, 4), Piece.PieceTypeE.KING, blackKing, "King");
-        generatePiece(PlayerE.Black, new Point(7, 5), Piece.PieceTypeE.BISHOP, blackBishop, "Bishop");
-        generatePiece(PlayerE.Black, new Point(7, 6), Piece.PieceTypeE.KNIGHT, blackKnight, "Knight");
-        generatePiece(PlayerE.Black, new Point(7, 7), Piece.PieceTypeE.ROOK, blackRook, "Rook");
-
-        firstHistory = null;
-        lastHistory = null;
-        enPassant = null;
     }
 
     public void generatePiece(PlayerE player, Point p, Piece.PieceTypeE piece, GameObject prefab, string str)
@@ -200,6 +182,7 @@ public class Board : Singleton<Board>
         piecesUpdated = true;
         placePieceAt(pieceAt(p1), p2);
         boardPieces[p1.getX(), p1.getY()] = null;
+        //destroyTileField();
     }
 
     //Calls tryToMove for the piece at p1 to move to p2
@@ -304,6 +287,7 @@ public class Board : Singleton<Board>
                 if (boardPieces[i, j] != null && ((Piece)boardPieces[i, j].GetComponent("Piece")).getAllegiance() == turn)
                     if (((Piece)boardPieces[i, j].GetComponent("Piece")).canMoveList().Count > 0)
                         return false;
+        Debug.Log("In Checkmate!");
         return true;
     }
 
@@ -320,9 +304,9 @@ public class Board : Singleton<Board>
     //Easy AI implementation
     //Picks a random valid piece and a random space it may move to
     //Hopefully not too computationally expensive
-    public void runEasyAI()
+    public IEnumerator runEasyAI()
     {
-        Debug.Log("Starting AI ...");
+        aIUpdated = false;
         bool flag = true;
         if(turn == (int)PlayerE.White)
         {
@@ -332,7 +316,7 @@ public class Board : Singleton<Board>
                 int randPieceInt = Random.Range(0, whiteList.Count);
                 Piece randPiece = (Piece)whiteList[randPieceInt].GetComponent("Piece");
                 List<Point> pointList = randPiece.canMoveList();
-                Debug.Log(pointList.Count);
+                makeTileField(pointList);
                 if(pointList.Count != 0)
                 {
                     Point randomPoint = pointList[Random.Range(0, pointList.Count)];
@@ -348,6 +332,7 @@ public class Board : Singleton<Board>
                 int randPieceInt = Random.Range(0, blackList.Count);
                 Piece randPiece = (Piece)blackList[randPieceInt].GetComponent("Piece");
                 List<Point> pointList = randPiece.canMoveList();
+                makeTileField(pointList);
                 if (pointList.Count != 0)
                 {
                     Point randomPoint = pointList[Random.Range(0, pointList.Count)];
@@ -356,14 +341,16 @@ public class Board : Singleton<Board>
                 }
             }
         }
+        yield return new WaitForSeconds(5);
+        aIUpdated = true;
     }
 
     //Normal AI implementation
     //Look at best move to a depth of 3 which is maximum depth with current efficiency
-    public void runNormalAI()
+    public IEnumerator runNormalAI()
     {
+        aIUpdated = false;
         bool flag = true;
-        StartCoroutine(WaitNSeconds(20));
         if (turn == (int)PlayerE.White)
         {
             while (flag)
@@ -394,10 +381,24 @@ public class Board : Singleton<Board>
                 }
             }
         }
+        yield return new WaitForSeconds(1);
+        aIUpdated = true;
     }
 
-    IEnumerator WaitNSeconds(int n)
+    private void makeTileField(List<Point> pointList)
     {
-        yield return new WaitForSeconds(n);
+        destroyTileField();
+        foreach(Point p in pointList)
+        {
+            tileList.Add(Instantiate(tilePrefab, new Vector3(p.turnToWorld()[0], 0.75f, p.turnToWorld()[1]), Quaternion.identity));
+        }
+    }
+
+    private void destroyTileField()
+    {
+        foreach(GameObject tile in tileList)
+        {
+            Destroy(tile);
+        }
     }
 }
