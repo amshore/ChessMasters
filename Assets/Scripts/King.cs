@@ -26,10 +26,10 @@ public class King : Piece {
             }
         if (!hasMoved)
         {
-            Point pt = new Point(loc.getX()+2, loc.getY());
+            Point pt = new Point(loc.getX(), loc.getY() + 2);
             if (canMove(pt) != MoveTypesE.ILLEGAL)
                 retMoveList.Add(pt);
-            Point pt1 = new Point(loc.getX() - 2, loc.getY());
+            Point pt1 = new Point(loc.getX(), loc.getY() - 2);
             if (canMove(pt1) != MoveTypesE.ILLEGAL)
                 retMoveList.Add(pt1);
         }
@@ -70,34 +70,34 @@ public class King : Piece {
         if ((System.Math.Abs(dx) <= 1 && System.Math.Abs(dx) <= 1))
             return mt;
 
-        if(!hasMoved && System.Math.Abs(dx) == 2 && dy == 0)
+        if(!hasMoved && System.Math.Abs(dy) == 2 && dx == 0)
         {
             if (gameBoard.inCheck(loc))
                 return MoveTypesE.ILLEGAL;
-            if(dx > 0)
+            if(dy > 0)
             {
-                for(int i = loc.getX(); i < 7; i++)
+                for(int i = loc.getY(); i < 7; i++)
                 {
                     if (gameBoard.pieceAt(i, loc.getY()) != null)
                         return MoveTypesE.ILLEGAL;
                 }
-                GameObject rookMaybe = gameBoard.pieceAt(7, loc.getY());
+                GameObject rookMaybe = gameBoard.pieceAt(loc.getX(), 7);
                 if (rookMaybe == null || ((Piece)rookMaybe.GetComponent("Piece")).getHasMoved())
                     return MoveTypesE.ILLEGAL;
-                if (!gameBoard.inCheck(gameObject, rookMaybe, loc.getX() + 1, loc.getY()) && !gameBoard.inCheck(gameObject, rookMaybe, loc.getX() + 2, loc.getY()))
+                if (!gameBoard.inCheck(gameObject, rookMaybe, loc.getX(), loc.getY() + 1) && !gameBoard.inCheck(gameObject, rookMaybe, loc.getX(), loc.getY() + 2))
                     return MoveTypesE.ILLEGAL;
             }
             else
             {
-                for (int i = loc.getX(); i > 0; i--)
+                for (int i = loc.getY(); i > 0; i--)
                 {
                     if (gameBoard.pieceAt(i, loc.getY()) != null)
                         return MoveTypesE.ILLEGAL;
                 }
-                GameObject rookMaybe = gameBoard.pieceAt(0, loc.getY());
+                GameObject rookMaybe = gameBoard.pieceAt(loc.getX(), 0);
                 if (rookMaybe == null || ((Piece)rookMaybe.GetComponent("Piece")).getHasMoved())
                     return MoveTypesE.ILLEGAL;
-                if (!gameBoard.inCheck(gameObject, rookMaybe, loc.getX() - 1, loc.getY()) && !gameBoard.inCheck(gameObject, rookMaybe, loc.getX() - 2, loc.getY()))
+                if (!gameBoard.inCheck(gameObject, rookMaybe, loc.getX(), loc.getY() - 1) && !gameBoard.inCheck(gameObject, rookMaybe, loc.getX(), loc.getY() - 2))
                     return MoveTypesE.ILLEGAL;
             }
             return MoveTypesE.CASTLE;
@@ -121,11 +121,11 @@ public class King : Piece {
                 gameBoard.Move(loc, p);
                 if (loc.getX() > p.getX())
                 {
-                    gameBoard.Move(new Point(0, p.getY()), new Point(p.getX() + 1, p.getY()));
+                    gameBoard.Move(new Point(p.getX(), 0), new Point(p.getX(), p.getY() + 1));
                 }
                 else
                 {
-                    gameBoard.Move(new Point(7, p.getY()), new Point(p.getX() - 1, p.getY()));
+                    gameBoard.Move(new Point(p.getX(), 7), new Point(p.getX(), p.getY() - 1));
                 }
             }
             else

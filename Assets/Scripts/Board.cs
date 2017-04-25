@@ -82,7 +82,7 @@ public class Board : Singleton<Board>
     void Update()
     {
 
-        if (piecesUpdated && aIUpdated)
+        if (!gameActive && piecesUpdated && aIUpdated)
         {
             piecesUpdated = false;
             gameActive = isCheckmate();
@@ -341,7 +341,7 @@ public class Board : Singleton<Board>
                 }
             }
         }
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(2);
         aIUpdated = true;
     }
 
